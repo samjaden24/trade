@@ -80,4 +80,3 @@
      /* Darker blue for the card background */
   }
   </style>
-  

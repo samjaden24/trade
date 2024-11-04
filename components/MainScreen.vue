@@ -27,7 +27,7 @@
   
   <script>
   import SignIn from './SignIn.vue';
-  import Signup from './Signup.vue';
+  import Signup from './SignUp.vue';
   
   export default {
     components: {
@@ -69,4 +69,3 @@
     transition: background-color 0.3s ease;
   }
   </style>
-  
