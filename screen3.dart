@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:tradeflutter/screen/screen2.dart';
+import 'package:tradeflutter/screen/screen4.dart';
 
 class Screen3 extends StatefulWidget {
   const Screen3({super.key});
@@ -8,81 +10,112 @@ class Screen3 extends StatefulWidget {
 }
 
 class _Screen3State extends State<Screen3> {
-  @override
-  void initState() {
-    super.initState();
-    selectedIndex=0;
-  }
+  final formKey = GlobalKey<FormState>();
 
+  final TextEditingController email = TextEditingController();
+  final TextEditingController password = TextEditingController();
 
-  List <Widget> pages=[
-    Center(child: Text("This is Profile Page",style: TextStyle(fontSize: 24),)),
-    Center(child: Text("This is Trade Execution",style: TextStyle(fontSize: 24),)),
-    Center(child: Text("This is Trade History",style: TextStyle(fontSize: 24),)),
-    Center(child: Text("This is Logout",style: TextStyle(fontSize: 24),))
-  ];
-
-  late int selectedIndex;
-
-  void setSelectedIndex(int index){
-    setState(() {
-      selectedIndex=index;
-    });
-  }
+  bool passVisibility = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
+        title: Text("Login Page"),
         centerTitle: true,
-        title: Text("FLATTRADE"),
       ),
-      drawer: Drawer(
-          child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          DrawerHeader(
-            decoration: BoxDecoration(color: Colors.blue,),
-              child: Text(
-            "Navigation Menu",
-            style: TextStyle(color: Colors.white, fontSize: 24),
-          )),
-          ListTile(
-            leading: Icon(Icons.person),
-            title: Text("Profile"),
-            onTap: () {
-              setSelectedIndex(0);
-              Navigator.pop(context);
-            },
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Form(
+          key: formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            // crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Flexible(
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  child: TextFormField(
+                    controller: email,
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.mail),
+                      labelText: "Email",
+                      hintText: "Enter your email",
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your email';
+                      }
+                      if (!RegExp(
+                              r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$")
+                          .hasMatch(value)) {
+                        return 'Please enter a valid email';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+              ),
+              Flexible(
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  child: TextFormField(
+                    controller: password,
+                    obscureText: passVisibility,
+                    decoration: InputDecoration(
+                      suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              passVisibility = !passVisibility;
+                            });
+                          },
+                          icon: Icon(passVisibility
+                              ? Icons.remove_red_eye_outlined
+                              : Icons.remove_red_eye)),
+                      labelText: "Password",
+                      hintText: "Enter your password",
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your password';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+              ),
+              Flexible(
+                child: Container(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (formKey.currentState!.validate()) {
+                        print("Email: ${email.text}");
+                        print("Password: ${password.text}");
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => Screen4(),));
+                      }
+                    },
+                    child: Text(
+                      "Login",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.blue),
+                      padding: MaterialStateProperty.all(
+                          EdgeInsets.symmetric(vertical: 15, horizontal: 50)),
+                    ),
+                  ),
+                ),
+              ),
+              TextButton(onPressed: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => Screen2(),));
+              }, child: Text("New User?Register Here"))
+            ],
           ),
-          ListTile(
-            leading: Icon(Icons.trending_up),
-            title: Text("Trade Execution"),
-            onTap: () {
-              setSelectedIndex(1);
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.history),
-            title: Text("Trade History"),
-            onTap: () {
-              setSelectedIndex(2);
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.logout),
-            title: Text("Logout"),
-            onTap: () {
-              setSelectedIndex(3);
-              Navigator.pop(context);
-            },
-          )
-        ],
-      )),
-      body: pages[selectedIndex],
+        ),
+      ),
     );
   }
 }
